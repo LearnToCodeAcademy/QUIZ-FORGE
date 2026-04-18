@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
@@ -188,7 +187,7 @@ void main() async {
   print('╚════════════════════════════════════════════════════════════════╝\n');
 
   const geminiApiKey = 'AIzaSyCTBlCBXH3uCtmo1K9juaZe1kxvv6avtec';
-  final geminiService = GeminiService(apiKey: geminiApiKey);
+  const geminiService = GeminiService(apiKey: geminiApiKey);
 
   print('📚 TEST: Generating Quiz from Sample Content');
   print('─' * 65);

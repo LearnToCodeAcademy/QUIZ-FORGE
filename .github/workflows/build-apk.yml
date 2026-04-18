@@ -13,6 +13,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
     - name: Set up Flutter
       uses: subosito/flutter-action@v2
@@ -25,6 +27,12 @@ jobs:
       with:
         distribution: 'temurin'
         java-version: '17'
+
+    - name: Enable KVM
+      run: |
+        echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+        sudo udevadm control --reload-rules
+        sudo udevadm trigger --name-match=kvm
 
     - name: Create google-services.json
       run: |
@@ -73,6 +81,9 @@ jobs:
 
     - name: Get dependencies
       run: flutter pub get
+
+    - name: Run Flutter analyze
+      run: flutter analyze
 
     - name: Build APK
       run: flutter build apk --release
