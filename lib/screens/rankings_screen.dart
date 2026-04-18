@@ -7,7 +7,7 @@ class RankingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final top3 = const [
+    const top3 = [
       ('RYAN CHESTER MEDALLO', 1, 'R'),
       ('PRINCE MARL LIZANDRELLE MIRASOL', 3, 'P'),
       ('John', 0, 'J'),
