@@ -2,9 +2,9 @@ name: Build Android APK
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [main, master]
   pull_request:
-    branches: [ main, master ]
+    branches: [main, master]
   workflow_dispatch:
 
 jobs:
@@ -12,39 +12,42 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v6
-      with:
-        fetch-depth: 0
+      # Checkout repo
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-    - name: Set up Flutter
-      uses: subosito/flutter-action@v2
-      with:
-        flutter-version: '3.19.0'
-        channel: 'stable'
+      # Setup Java (required for Android build)
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
 
-    - name: Set up Java
-      uses: actions/setup-java@v5
-      with:
-        distribution: 'temurin'
-        java-version: '17'
+      # Setup Flutter
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.19.0
+          channel: stable
+          cache: true
 
-    - name: Enable KVM
-      run: |
-        echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
-        sudo udevadm control --reload-rules
-        sudo udevadm trigger --name-match=kvm
+      # Install dependencies
+      - name: Get dependencies
+        run: flutter pub get
 
-    - name: Get dependencies
-      run: flutter pub get
+      # Analyze code (optional but good practice)
+      - name: Analyze project
+        run: flutter analyze
 
-    - name: Run Flutter analyze
-      run: flutter analyze
+      # Build APK
+      - name: Build APK
+        run: flutter build apk --release
 
-    - name: Build APK
-      run: flutter build apk --release
-
-    - name: Upload APK
-      uses: actions/upload-artifact@v4
-      with:
-        name: quiz-forge-apk
-        path: build/app/outputs/flutter-apk/app-release.apk
+      # Upload artifact
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: quiz-forge-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
