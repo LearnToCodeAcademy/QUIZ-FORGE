@@ -12,8 +12,8 @@ class GlowCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xFF121C44),
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xFF7C3AED).withOpacity(.5)),
-        boxShadow: [BoxShadow(color: const Color(0xFF7C3AED).withOpacity(.15), blurRadius: 16, spreadRadius: 1)],
+        border: Border.all(color: const Color(0xFF7C3AED).withValues(alpha: 0.5)),
+        boxShadow: [BoxShadow(color: const Color(0xFF7C3AED).withValues(alpha: 0.15), blurRadius: 16, spreadRadius: 1)],
       ),
       child: child,
     );

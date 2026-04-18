@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import '../models/models.dart';
 import '../state/app_state.dart';
 import '../state/auth_state.dart';
-import '../services/auth_service.dart';
 import '../widgets/app_shell.dart';
 import '../widgets/ui_parts.dart';
 

@@ -15,7 +15,7 @@ void main() async {
   print('\n📚 TEST 1: Generating Quiz from Sample Text Content');
   print('─' * 65);
 
-  final sampleContent = '''
+  const sampleContent = '''
 Flutter is an open-source UI framework by Google for building beautiful, 
 natively compiled applications from a single codebase for mobile, web, and desktop.
 

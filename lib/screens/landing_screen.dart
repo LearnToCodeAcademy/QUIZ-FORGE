@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../state/auth_state.dart';
 import '../state/app_state.dart';
-import '../services/auth_service.dart';
 
 class LandingScreen extends ConsumerWidget {
   const LandingScreen({super.key});
