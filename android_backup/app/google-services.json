@@ -1,0 +1,18 @@
+{
+  "type": "service_account",
+  "project_id": "quizforge-app",
+  "private_key_id": "1",
+  "private_key": "-----BEGIN RSA PRIVATE KEY-----\nMIIEowIBAAKCAQEA2Z3qX2BTLS7ZAAAA\n-----END RSA PRIVATE KEY-----",
+  "client_email": "firebase-service@quizforge-app.iam.gserviceaccount.com",
+  "client_id": "666046041125",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-service%40quizforge-app.iam.gserviceaccount.com",
+  "project_id": "quizforge-app",
+  "client_id": "666046041125-2lc674r7jivd8pdriing84c06e8ajdbt.apps.googleusercontent.com",
+  "apiKey": "AIzaSyD1234567890abcdefghijk",
+  "clientId": "666046041125-2lc674r7jivd8pdriing84c06e8ajdbt.apps.googleusercontent.com",
+  "androidClientId": "666046041125-2lc674r7jivd8pdriing84c06e8ajdbt.apps.googleusercontent.com",
+  "clientSecret": "GOCSPX-1234567890abcdefg"
+}

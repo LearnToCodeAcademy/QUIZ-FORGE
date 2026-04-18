@@ -1,0 +1,312 @@
+QUIZFORGE IMPLEMENTATION GUIDE FOR COPILOT (FLUTTER)
+===================================================
+
+Project Name:
+- QuizForge
+
+Objective:
+- Build a production-ready Flutter app that follows the screenshot reference exactly.
+- Preserve dark theme, violet accents, card radius, spacing, hierarchy, and empty states.
+- Do not redesign or simplify.
+
+---------------------------------------------
+1) REQUIRED PUBSPEC (MUST MATCH PROJECT NEEDS)
+---------------------------------------------
+Use these values in pubspec.yaml:
+
+name: quizforge
+description: QuizForge - AI-powered study tools in Flutter.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.4.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  flutter_riverpod: ^2.5.1
+  go_router: ^14.2.7
+  google_fonts: ^6.2.1
+  google_sign_in: ^6.2.2
+  firebase_core: ^3.6.0
+  firebase_auth: ^5.3.1
+  file_picker: ^8.1.2
+  shared_preferences: ^2.3.2
+  flutter_secure_storage: ^9.2.2
+  intl: ^0.19.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+
+---------------------------------------------
+2) APP ARCHITECTURE (MUST BE MODULAR)
+---------------------------------------------
+Folder breakdown:
+- lib/main.dart
+- lib/app.dart
+- lib/routing.dart
+- lib/theme.dart
+- lib/models/
+- lib/services/
+- lib/state/
+- lib/widgets/
+- lib/screens/
+  - games/
+  - settings/
+
+State Management:
+- Use Riverpod Notifier/StateNotifier patterns.
+- Keep app-wide state for files, bookmarks, sessions, history, settings, model selection, and keys.
+
+Routing:
+- Use go_router and keep routes explicit.
+- Required destinations:
+  /login
+  /home
+  /profile
+  /bookmarks
+  /session
+  /history
+  /rankings
+  /settings
+  /quiz-config
+  /games
+  /games/shell
+  /games/word-scramble
+  /games/speed-blitz
+
+---------------------------------------------
+3) UI SPEC (DO NOT DEVIATE)
+---------------------------------------------
+A) Login / Landing
+- Show title: “Study Smarter with AI-Powered Learning Tools”
+- Dark navy background with violet glow
+- Support blurb about quizzes/reviewers/chat
+- Google sign-in area card + button
+
+B) Home
+- Heading: “What would you like to do?”
+- Section: Study Tools
+- 4 cards:
+  1. Generate Quiz
+  2. Reviewer Notes
+  3. Flashcards
+  4. Chat with AI
+
+C) Profile / Files
+- Avatar, name, email, file counter
+- “My Files” section
+- Upload button
+- Empty state when no files
+- Delete file action
+- Accepted types concept: PDF, DOCX, PPTX, TXT, code files
+
+D) Games hub
+- Cards:
+  - Shell Game
+  - Matching Pairs
+  - Word Scramble
+  - Speed Blitz
+
+E) Shell Game screen
+- Question prompt
+- 3 cup visuals
+- Primary CTA: “Start Round 1”
+
+F) Word Scramble screen
+- Scrambled challenge
+- Letter tiles
+- Controls: Clear / Skip / Next/Remove behavior
+
+G) Speed Blitz screen
+- Timer + progress
+- Question card
+- Multiple choice answers
+
+H) Quiz Config
+- Quiz type options
+- Number of questions max 30
+- Difficulty: Easy / Medium / Hard
+- Start/Generate button
+
+I) Bookmarks
+- Title: My Bookmarks
+- Empty state if none
+
+J) Current Session
+- Title + subtitle
+- NO ACTIVE TASK empty region
+- Recent sessions list below
+
+K) Activity History
+- Empty state message
+- Log structure for future events
+
+L) Rankings / Leaderboard
+- Top 3 prominent center
+- Remaining users listed
+- Ranked by file uploads / quiz activity
+
+M) Settings
+- Theme Color choices (solid + gradient style options)
+- Font style choices:
+  Inter, Roboto, Open Sans, Lato, Montserrat, Nunito,
+  Playfair Display, Source Code Pro, Poppins, Merriweather
+
+N) Quiz Settings subsection
+- Toggle: Allow Going Back to Previous Questions
+- Per-question timer (0 disables)
+
+O) AI Model section
+- Grok
+- Google Gemini
+- Single-select behavior
+
+P) Custom API Keys section
+- Grok (xAI) API key field
+- Google Gemini API key field
+- Show/hide support if implemented
+- Save API keys button
+- Keys stored locally (secure storage)
+
+Q) Danger Zone section
+- Clear All Data
+- Delete Account
+- Must show confirmation dialog before destructive action
+
+---------------------------------------------
+4) LOGIC REQUIREMENTS
+---------------------------------------------
+- Uploading file updates profile count immediately.
+- Deleted files reduce count immediately.
+- Bookmarks persist and display later.
+- Sessions and activity history update based on quiz/game actions.
+- Quiz setting toggle affects flow behavior.
+- Timer setting 0 => no timer.
+- AI model selection affects generation service routing.
+
+---------------------------------------------
+5) AI INTEGRATION REQUIREMENTS
+---------------------------------------------
+Gemini integration should provide:
+- quiz generation
+- reviewer notes
+- flashcards
+- AI chat
+
+Service contract suggestion:
+- generateQuizFromText(String content, QuizConfig config)
+- generateReviewerNotes(String content)
+- generateFlashcards(String content)
+- chatWithContext(String content, String userPrompt)
+
+Implement:
+- loading, success, retry, error states
+- asynchronous requests
+- educational tone and concise explanation
+
+Optional model strategy:
+- selectedModel == 'Grok' => use xAI endpoint if key available
+- selectedModel == 'Google Gemini' => use Gemini endpoint
+- fallback to user-selected available provider
+
+---------------------------------------------
+6) THEMING + DESIGN TOKENS
+---------------------------------------------
+Base:
+- background: very dark navy (#050924 / #070B2E)
+- card: deep indigo (#121C44)
+- accent: purple/violet (#8B5CF6, #A78BFA)
+
+Shape:
+- card radius 16-20px
+- subtle glow and soft border
+
+Typography:
+- bold headings
+- lower-contrast helper text
+- maintain visual hierarchy from screenshots
+
+Spacing:
+- generous vertical rhythm
+- centered key hero text on login
+- clear section separations
+
+---------------------------------------------
+7) PERSISTENCE STRATEGY
+---------------------------------------------
+Use:
+- flutter_secure_storage for API keys and sensitive data
+- shared_preferences for lightweight preferences and cached metadata
+
+Store:
+- uploaded files metadata (name, path, createdAt)
+- bookmarks
+- settings
+- session history
+- activity history
+- model selection
+
+---------------------------------------------
+8) FIREBASE / AUTH NOTES
+---------------------------------------------
+Google Sign-In integration steps:
+1. Add google-services files for Android/iOS
+2. Initialize Firebase in main()
+3. Use google_sign_in + firebase_auth link flow
+4. Save signed-in user profile in state
+5. Surface display name and email on profile
+
+---------------------------------------------
+9) QUALITY / DELIVERY CHECKLIST
+---------------------------------------------
+- Flutter analyze clean or minimal warnings
+- Null-safe code
+- Production-ready folder structure
+- Reusable widgets for cards, empty states, settings rows
+- All screens navigable through router
+- Empty/loading/error states present where needed
+
+---------------------------------------------
+10) TEXT STRINGS TO PRESERVE (IMPORTANT)
+---------------------------------------------
+- Study Smarter with AI-Powered Learning Tools
+- What would you like to do?
+- Study Tools
+- Generate Quiz
+- Reviewer Notes
+- Flashcards
+- Chat with AI
+- My Files
+- My Bookmarks
+- Current Session
+- Activity History
+- Leaderboard
+- Settings
+- Quiz Settings
+- Danger Zone
+- Custom API Keys
+- Grok
+- Google Gemini
+- Shell Game
+- Word Scramble
+- Matching Pairs
+- Speed Blitz
+
+---------------------------------------------
+11) IMPORTANT IMPLEMENTATION BEHAVIOR
+---------------------------------------------
+- Match screenshot composition exactly.
+- Do not change labels unless required by code constraints.
+- Preserve top nav and visual language.
+- Keep dark mode as default and primary experience.
+- Ensure mobile responsiveness for common widths.
+
+End of implementation guide.

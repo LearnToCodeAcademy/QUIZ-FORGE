@@ -1,0 +1,84 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.19.0'
+        channel: 'stable'
+
+    - name: Set up Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+
+    - name: Create google-services.json
+      run: |
+        mkdir -p android/app/src
+        cat > android/app/src/google-services.json << EOF
+        {
+          "project_info": {
+            "project_number": "666046041125",
+            "project_id": "quiz-forge-666046041125",
+            "storage_bucket": "quiz-forge-666046041125.appspot.com"
+          },
+          "client": [
+            {
+              "client_info": {
+                "mobilesdk_app_id": "1:666046041125:android:2lc674r7jivd8pdriing84c06e8ajdbt",
+                "android_client_info": {
+                  "package_name": "com.quizforge.app"
+                }
+              },
+              "oauth_client": [
+                {
+                  "client_id": "666046041125-2lc674r7jivd8pdriing84c06e8ajdbt.apps.googleusercontent.com",
+                  "client_type": 3
+                }
+              ],
+              "api_key": [
+                {
+                  "current_key": "AIzaSyCTBlCBXH3uCtmo1K9juaZe1kxvv6avtec"
+                }
+              ],
+              "services": {
+                "appinvite_service": {
+                  "other_platform_oauth_client": [
+                    {
+                      "client_id": "666046041125-2lc674r7jivd8pdriing84c06e8ajdbt.apps.googleusercontent.com",
+                      "client_type": 3
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          "configuration_version": "1"
+        }
+        EOF
+
+    - name: Get dependencies
+      run: flutter pub get
+
+    - name: Build APK
+      run: flutter build apk --release
+
+    - name: Upload APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: quiz-forge-apk
+        path: build/app/outputs/flutter-apk/app-release.apk
