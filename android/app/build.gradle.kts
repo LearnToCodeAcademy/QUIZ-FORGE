@@ -41,7 +41,7 @@ android {
 }
 dependencies {
     implementation("com.google.firebase:firebase-core:21.1.1")
-    implementation("com.google.firebase:firebase-auth:22.3.1")
+    implementation("com.google.firebase:firebase-auth:23.2.1")
     implementation("com.google.android.gms:play-services-auth:20.7.0")
 }
 flutter {
