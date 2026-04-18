@@ -15,7 +15,7 @@ ThemeData buildTheme(AppSettings settings) {
       surface: const Color(0xFF121C44),
     ),
     textTheme: textTheme,
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
       color: const Color(0xFF121C44),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
     ),
