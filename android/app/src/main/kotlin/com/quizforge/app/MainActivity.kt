@@ -1,4 +1,4 @@
-package com.example.temp_flutter_app
+package com.quizforge.app
 
 import io.flutter.embedding.android.FlutterActivity
 
