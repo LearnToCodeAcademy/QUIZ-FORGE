@@ -6,7 +6,7 @@ class AuthService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn(
     scopes: ['email', 'profile'],
-    serverClientId: '666046041125-2lc674r7jivd8pdriing84c06e8ajdbt.apps.googleusercontent.com',
+    serverClientId: '666046041125-9oc54aeqabu1b3jl1noedqnq6eqmgpr4.apps.googleusercontent.com',
   );
 
   // Get current user
