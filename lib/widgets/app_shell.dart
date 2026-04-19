@@ -21,9 +21,10 @@ class AppShell extends StatelessWidget {
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFF050924), Color(0xFF070B2E)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+            colors: [Color(0xFF03071E), Color(0xFF131B36), Color(0xFF090D28)],
+            stops: [0.0, 0.5, 1.0],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
         ),
         child: SafeArea(
@@ -41,9 +42,17 @@ class AppShell extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(title, style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w700)),
-                      const SizedBox(height: 4),
-                      Text(subtitle, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white70)),
+                      Text(title, style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                        fontWeight: FontWeight.w800,
+                        foreground: Paint()..shader = const LinearGradient(
+                          colors: [Colors.white, Color(0xFFA78BFA)],
+                        ).createShader(const Rect.fromLTWH(0.0, 0.0, 200.0, 70.0)),
+                      )),
+                      const SizedBox(height: 6),
+                      Text(subtitle, style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Colors.white70,
+                        letterSpacing: 0.5,
+                      )),
                     ],
                   ),
                 ),
@@ -67,8 +76,16 @@ class _TopNav extends StatelessWidget {
       height: 44,
       padding: const EdgeInsets.symmetric(horizontal: 14),
       decoration: BoxDecoration(
-        color: const Color(0xFF121C44),
+        color: const Color(0xFF121C44).withOpacity(0.8),
         borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: Colors.white10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          )
+        ],
       ),
       child: Row(
         children: [

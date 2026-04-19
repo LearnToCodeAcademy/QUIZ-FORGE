@@ -95,31 +95,63 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
   }
 
   Widget _buildCardSide(String text, String label, {bool isBack = false}) {
-    return GlowCard(
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: isBack
+              ? [const Color(0xFF1E293B), const Color(0xFF0F172A)]
+              : [const Color(0xFF3B0764), const Color(0xFF1E1B4B)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: (isBack ? Colors.blueAccent : const Color(0xFFA78BFA)).withOpacity(0.3),
+            blurRadius: 20,
+            spreadRadius: 2,
+            offset: const Offset(0, 8),
+          )
+        ],
+        border: Border.all(
+          color: (isBack ? Colors.blueAccent : const Color(0xFFA78BFA)).withOpacity(0.5),
+          width: 2,
+        ),
+      ),
       padding: const EdgeInsets.all(32),
-      child: Container(
-        width: double.infinity,
-        height: double.infinity,
-        alignment: Alignment.center,
+      child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              label,
-              style: TextStyle(
-                color: Colors.white.withOpacity(0.3),
-                fontWeight: FontWeight.bold,
-                letterSpacing: 2,
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(
+                label.toUpperCase(),
+                style: TextStyle(
+                  color: Colors.white.withOpacity(0.7),
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 2,
+                  fontSize: 12,
+                ),
               ),
             ),
-            const SizedBox(height: 24),
-            Text(
-              text,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.w500,
-                color: Colors.white,
+            const SizedBox(height: 32),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Text(
+                  text,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: isBack ? 20 : 26,
+                    fontWeight: isBack ? FontWeight.w400 : FontWeight.bold,
+                    color: Colors.white,
+                    height: 1.4,
+                  ),
+                ),
               ),
             ),
           ],

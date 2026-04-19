@@ -34,8 +34,9 @@ class _QuizConfigScreenState extends ConsumerState<QuizConfigScreen> {
       subtitle: 'Customize the quiz type, number of questions, and difficulty level',
       child: Padding(
         padding: const EdgeInsets.all(20),
-        child: GlowCard(
-          child: ListView(
+        child: FadeInUp(
+          child: GlowCard(
+            child: ListView(
             children: [
               // AI Selection at the Top
               Row(
@@ -81,70 +82,116 @@ class _QuizConfigScreenState extends ConsumerState<QuizConfigScreen> {
                 const Divider(color: Colors.white10, height: 24),
               ],
 
-              const Text('Quiz Type'),
-              const SizedBox(height: 8),
+              const Text('Quiz Type', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+              const SizedBox(height: 12),
               Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: ['True / False', 'Fill in the Blank', 'Mixed', 'Identification', 'Matching']
-                      .map((e) => ChoiceChip(label: Text(e), selected: type == e, onSelected: (_) => setState(() => type = e)))
+                  spacing: 12,
+                  runSpacing: 12,
+                  children: ['Multiple Choice', 'True / False', 'Fill in the Blank', 'Mixed', 'Identification', 'Matching']
+                      .map((e) => AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        child: ChoiceChip(
+                          label: Text(e, style: TextStyle(fontWeight: type == e ? FontWeight.bold : FontWeight.normal)),
+                          selected: type == e,
+                          onSelected: (_) => setState(() => type = e),
+                          backgroundColor: Colors.transparent,
+                          selectedColor: const Color(0xFFA78BFA).withOpacity(0.3),
+                          side: BorderSide(color: type == e ? const Color(0xFFA78BFA) : Colors.white24),
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        ),
+                      ))
                       .toList()),
-              const SizedBox(height: 16),
-              const Text('Number of Questions'),
-              const SizedBox(height: 8),
+              const SizedBox(height: 24),
+              const Text('Number of Questions', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+              const SizedBox(height: 12),
               Wrap(
-                  spacing: 8,
+                  spacing: 12,
                   children: [5, 10, 20, 30]
-                      .map((e) => ChoiceChip(label: Text('$e'), selected: count == e, onSelected: (_) => setState(() => count = e)))
+                      .map((e) => AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        child: ChoiceChip(
+                          label: Text('$e Questions'),
+                          selected: count == e,
+                          onSelected: (_) => setState(() => count = e),
+                          backgroundColor: Colors.transparent,
+                          selectedColor: const Color(0xFFA78BFA).withOpacity(0.3),
+                          side: BorderSide(color: count == e ? const Color(0xFFA78BFA) : Colors.white24),
+                        ),
+                      ))
                       .toList()),
-              const SizedBox(height: 16),
-              const Text('Difficulty'),
-              const SizedBox(height: 8),
+              const SizedBox(height: 24),
+              const Text('Difficulty', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+              const SizedBox(height: 12),
               Wrap(
-                  spacing: 8,
+                  spacing: 12,
                   children: ['Easy', 'Medium', 'Hard']
-                      .map((e) => ChoiceChip(label: Text(e), selected: diff == e, onSelected: (_) => setState(() => diff = e)))
+                      .map((e) => AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        child: ChoiceChip(
+                          label: Text(e),
+                          selected: diff == e,
+                          onSelected: (_) => setState(() => diff = e),
+                          backgroundColor: Colors.transparent,
+                          selectedColor: const Color(0xFFA78BFA).withOpacity(0.3),
+                          side: BorderSide(color: diff == e ? const Color(0xFFA78BFA) : Colors.white24),
+                        ),
+                      ))
                       .toList()),
               const SizedBox(height: 32),
               if (quizGen.isLoading)
-                const Center(child: CircularProgressIndicator())
+                const Column(
+                  children: [
+                    SizedBox(height: 24),
+                    CircularProgressIndicator(color: Color(0xFFA78BFA)),
+                    SizedBox(height: 16),
+                    Text("Forging your quiz with AI...", style: TextStyle(color: Color(0xFFA78BFA), fontWeight: FontWeight.bold)),
+                  ],
+                )
               else
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      backgroundColor: Color(settings.accent),
+                ScaleTransition(
+                  scale: const AlwaysStoppedAnimation(1.0), // Placeholder for potential animation wrap
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 56,
+                    child: ElevatedButton.icon(
+                      icon: const Icon(Icons.auto_awesome),
+                      label: const Text('GENERATE QUIZ', style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1.2)),
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        backgroundColor: Color(settings.accent),
+                        elevation: 8,
+                        shadowColor: Color(settings.accent).withOpacity(0.5),
+                      ),
+                      onPressed: () async {
+                        final config = QuizConfig(
+                          quizType: type,
+                          numQuestions: count,
+                          difficulty: diff,
+                        );
+
+                        if (appState.files.isNotEmpty) {
+                          await ref.read(quizGenerationProvider.notifier).generateQuizFromFile(
+                                file: appState.files.last,
+                                config: config,
+                              );
+                        } else {
+                          await ref.read(quizGenerationProvider.notifier).generateQuizFromText(
+                                content: "Flutter is an open-source UI software development kit created by Google. It is used to develop cross platform applications from a single codebase for any web browser, Fuchsia, Android, iOS, Linux, macOS, and Windows. First described in 2015, Flutter was released in May 2017.",
+                                config: config,
+                              );
+                        }
+
+                        if (ref.read(quizGenerationProvider).hasValue && context.mounted) {
+                          context.push('/quiz-player');
+                        }
+                      },
                     ),
-                    onPressed: () async {
-                      final config = QuizConfig(
-                        quizType: type,
-                        numQuestions: count,
-                        difficulty: diff,
-                      );
-
-                      if (appState.files.isNotEmpty) {
-                        await ref.read(quizGenerationProvider.notifier).generateQuizFromFile(
-                              file: appState.files.last,
-                              config: config,
-                            );
-                      } else {
-                        await ref.read(quizGenerationProvider.notifier).generateQuizFromText(
-                              content: "Flutter is an open-source UI software development kit created by Google. It is used to develop cross platform applications from a single codebase for any web browser, Fuchsia, Android, iOS, Linux, macOS, and Windows. First described in 2015, Flutter was released in May 2017.",
-                              config: config,
-                            );
-                      }
-
-                      if (ref.read(quizGenerationProvider).hasValue && context.mounted) {
-                        context.push('/quiz-player');
-                      }
-                    },
-                    child: const Text('GENERATE QUIZ', style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1.2)),
                   ),
                 ),
             ],
           ),
         ),
+      ),
       ),
     );
   }
