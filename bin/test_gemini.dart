@@ -186,7 +186,7 @@ void main() async {
   print('║          QuizForge - Gemini API Quiz Generation Test           ║');
   print('╚════════════════════════════════════════════════════════════════╝\n');
 
-  const geminiApiKey = 'AIzaSyAH2bUX7bjGZYdWJkDY6IWG0RGLoMXteBk';
+  const geminiApiKey = 'YOUR_API_KEY_HERE';
   final geminiService = GeminiService(apiKey: geminiApiKey);
 
   print('📚 TEST: Generating Quiz from Sample Content');
