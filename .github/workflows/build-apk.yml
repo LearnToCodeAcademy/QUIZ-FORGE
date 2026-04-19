@@ -79,9 +79,9 @@ jobs:
           }
           EOF
 
-      # Create .env file with the actual API key for the presentation build
+      # Create .env file using GitHub Secrets (to prevent Google from revoking the key)
       - name: Create .env with API key
-        run: echo "GEMINI_API_KEY=AIzaSyAH2bUX7bjGZYdWJkDY6IWG0RGLoMXteBk" > .env
+        run: echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" > .env
 
       # Install dependencies
       - name: Get dependencies
