@@ -11,8 +11,10 @@ void main() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+    print('✓ Firebase initialized successfully');
   } catch (e) {
-    print('Firebase initialization error: $e');
+    print('✗ Firebase initialization error: $e');
+    // Continue anyway - app can still function without Firebase
   }
   
   runApp(const ProviderScope(child: QuizForgeApp()));

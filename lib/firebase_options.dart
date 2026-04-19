@@ -18,29 +18,31 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyD1234567890abcdefghijk',
-    appId: '1:666046041125:web:abcdef1234567890',
+    apiKey: 'AIzaSyCTBlCBXH3uCtmo1K9juaZe1kxvv6avtec',
+    appId: '1:666046041125:web:2lc674r7jivd8pdriing84c06e8ajdbt',
     messagingSenderId: '666046041125',
-    projectId: 'quizforge-app',
-    authDomain: 'quizforge-app.firebaseapp.com',
-    databaseURL: 'https://quizforge-app.firebaseio.com',
-    storageBucket: 'quizforge-app.appspot.com',
+    projectId: 'quiz-forge-666046041125',
+    authDomain: 'quiz-forge-666046041125.firebaseapp.com',
+    databaseURL: 'https://quiz-forge-666046041125.firebaseio.com',
+    storageBucket: 'quiz-forge-666046041125.appspot.com',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyD1234567890abcdefghijk',
-    appId: '1:666046041125:android:abcdef1234567890',
+    apiKey: 'AIzaSyCTBlCBXH3uCtmo1K9juaZe1kxvv6avtec',
+    appId: '1:666046041125:android:2lc674r7jivd8pdriing84c06e8ajdbt',
     messagingSenderId: '666046041125',
-    projectId: 'quizforge-app',
-    databaseURL: 'https://quizforge-app.firebaseio.com',
+    projectId: 'quiz-forge-666046041125',
+    databaseURL: 'https://quiz-forge-666046041125.firebaseio.com',
+    storageBucket: 'quiz-forge-666046041125.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyD1234567890abcdefghijk',
-    appId: '1:666046041125:ios:abcdef1234567890',
+    apiKey: 'AIzaSyCTBlCBXH3uCtmo1K9juaZe1kxvv6avtec',
+    appId: '1:666046041125:ios:2lc674r7jivd8pdriing84c06e8ajdbt',
     messagingSenderId: '666046041125',
-    projectId: 'quizforge-app',
-    databaseURL: 'https://quizforge-app.firebaseio.com',
+    projectId: 'quiz-forge-666046041125',
+    databaseURL: 'https://quiz-forge-666046041125.firebaseio.com',
+    storageBucket: 'quiz-forge-666046041125.appspot.com',
     iosBundleId: 'com.quizforge.app',
   );
 }
