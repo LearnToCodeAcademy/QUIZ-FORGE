@@ -37,7 +37,7 @@ class GeminiService {
           ],
           'generationConfig': {
             'temperature': 0.1,
-            'response_mime_type': 'application/json',
+            'responseMimeType': 'application/json',
           }
         }),
       );
@@ -118,7 +118,7 @@ class GeminiService {
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'contents': [{'parts': [{'text': prompt}]}],
-          'generationConfig': {'temperature': 0.1, 'response_mime_type': 'application/json'}
+          'generationConfig': {'temperature': 0.1, 'responseMimeType': 'application/json'}
         }),
       );
 
