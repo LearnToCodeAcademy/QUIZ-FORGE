@@ -36,10 +36,21 @@ class AuthService {
         print('Web platform detected, using signInWithPopup...');
         userCredential = await _firebaseAuth.signInWithPopup(googleProvider);
       } else {
-        // For mobile, using signInWithProvider (which uses browser flow on some configs)
-        // or standard GoogleSignIn flow.
-        print('Mobile platform detected, using signInWithProvider...');
-        userCredential = await _firebaseAuth.signInWithProvider(googleProvider);
+        // For mobile, use standard native Google Sign-In flow
+        print('Mobile platform detected, using native GoogleSignIn...');
+        final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+        if (googleUser == null) {
+          print('User canceled Google Sign-In');
+          return null;
+        }
+
+        final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+        final AuthCredential credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
+
+        userCredential = await _firebaseAuth.signInWithCredential(credential);
       }
 
       print('Sign-in successful for user: ${userCredential.user?.displayName}');
