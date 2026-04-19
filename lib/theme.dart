@@ -15,10 +15,6 @@ ThemeData buildTheme(AppSettings settings) {
       surface: const Color(0xFF121C44),
     ),
     textTheme: textTheme,
-    cardTheme: CardTheme(
-      color: const Color(0xFF121C44),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-    ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         backgroundColor: accent,
