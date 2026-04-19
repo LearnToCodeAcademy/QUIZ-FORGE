@@ -79,9 +79,9 @@ jobs:
           }
           EOF
 
-      # Create placeholder .env file to satisfy flutter build requirements
-      - name: Create placeholder .env
-        run: echo "GEMINI_API_KEY=" > .env
+      # Create .env file with the actual API key for the presentation build
+      - name: Create .env with API key
+        run: echo "GEMINI_API_KEY=AIzaSyAH2bUX7bjGZYdWJkDY6IWG0RGLoMXteBk" > .env
 
       # Install dependencies
       - name: Get dependencies
