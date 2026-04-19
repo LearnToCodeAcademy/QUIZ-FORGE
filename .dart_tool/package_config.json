@@ -8,6 +8,12 @@
       "languageVersion": "3.2"
     },
     {
+      "name": "archive",
+      "rootUri": "file:///C:/Users/johnthewebcoder/AppData/Local/Pub/Cache/hosted/pub.dev/archive-3.6.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
       "name": "args",
       "rootUri": "file:///C:/Users/johnthewebcoder/AppData/Local/Pub/Cache/hosted/pub.dev/args-2.7.0",
       "packageUri": "lib/",
@@ -50,6 +56,12 @@
       "languageVersion": "3.4"
     },
     {
+      "name": "convert",
+      "rootUri": "file:///C:/Users/johnthewebcoder/AppData/Local/Pub/Cache/hosted/pub.dev/convert-3.1.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
       "name": "cross_file",
       "rootUri": "file:///C:/Users/johnthewebcoder/AppData/Local/Pub/Cache/hosted/pub.dev/cross_file-0.3.5+2",
       "packageUri": "lib/",
@@ -66,6 +78,12 @@
       "rootUri": "file:///C:/Users/johnthewebcoder/AppData/Local/Pub/Cache/hosted/pub.dev/cupertino_icons-1.0.9",
       "packageUri": "lib/",
       "languageVersion": "3.9"
+    },
+    {
+      "name": "docx_to_text",
+      "rootUri": "file:///C:/Users/johnthewebcoder/AppData/Local/Pub/Cache/hosted/pub.dev/docx_to_text-1.0.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
     },
     {
       "name": "fake_async",
@@ -132,6 +150,12 @@
       "rootUri": "file:///C:/Users/johnthewebcoder/Downloads/flutter_windows_3.41.7-stable/flutter/packages/flutter",
       "packageUri": "lib/",
       "languageVersion": "3.9"
+    },
+    {
+      "name": "flutter_dotenv",
+      "rootUri": "file:///C:/Users/johnthewebcoder/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_dotenv-5.2.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
     },
     {
       "name": "flutter_lints",
@@ -410,6 +434,12 @@
       "languageVersion": "3.2"
     },
     {
+      "name": "petitparser",
+      "rootUri": "file:///C:/Users/johnthewebcoder/AppData/Local/Pub/Cache/hosted/pub.dev/petitparser-7.0.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.8"
+    },
+    {
       "name": "platform",
       "rootUri": "file:///C:/Users/johnthewebcoder/AppData/Local/Pub/Cache/hosted/pub.dev/platform-3.1.6",
       "packageUri": "lib/",
@@ -512,6 +542,18 @@
       "languageVersion": "3.1"
     },
     {
+      "name": "syncfusion_flutter_core",
+      "rootUri": "file:///C:/Users/johnthewebcoder/AppData/Local/Pub/Cache/hosted/pub.dev/syncfusion_flutter_core-25.2.7",
+      "packageUri": "lib/",
+      "languageVersion": "2.17"
+    },
+    {
+      "name": "syncfusion_flutter_pdf",
+      "rootUri": "file:///C:/Users/johnthewebcoder/AppData/Local/Pub/Cache/hosted/pub.dev/syncfusion_flutter_pdf-25.2.7",
+      "packageUri": "lib/",
+      "languageVersion": "2.17"
+    },
+    {
       "name": "term_glyph",
       "rootUri": "file:///C:/Users/johnthewebcoder/AppData/Local/Pub/Cache/hosted/pub.dev/term_glyph-1.2.2",
       "packageUri": "lib/",
@@ -558,6 +600,12 @@
       "rootUri": "file:///C:/Users/johnthewebcoder/AppData/Local/Pub/Cache/hosted/pub.dev/xdg_directories-1.1.0",
       "packageUri": "lib/",
       "languageVersion": "3.3"
+    },
+    {
+      "name": "xml",
+      "rootUri": "file:///C:/Users/johnthewebcoder/AppData/Local/Pub/Cache/hosted/pub.dev/xml-6.6.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.8"
     },
     {
       "name": "yaml",

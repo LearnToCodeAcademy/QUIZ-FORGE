@@ -1,7 +1,56 @@
+import 'dart:typed_data';
+
+class Flashcard {
+  final String id;
+  final String front;
+  final String back;
+
+  Flashcard({required this.id, required this.front, required this.back});
+
+  Map<String, dynamic> toJson() => {'id': id, 'front': front, 'back': back};
+  factory Flashcard.fromJson(Map<String, dynamic> json) => Flashcard(
+        id: json['id'] ?? '',
+        front: json['front'] ?? '',
+        back: json['back'] ?? '',
+      );
+}
+
+class ReviewerNote {
+  final String id;
+  final String title;
+  final String content; // Markdown content
+  final DateTime createdAt;
+
+  ReviewerNote({required this.id, required this.title, required this.content, required this.createdAt});
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'title': title,
+        'content': content,
+        'createdAt': createdAt.toIso8601String(),
+      };
+  factory ReviewerNote.fromJson(Map<String, dynamic> json) => ReviewerNote(
+        id: json['id'],
+        title: json['title'],
+        content: json['content'],
+        createdAt: DateTime.parse(json['createdAt']),
+      );
+}
+
+class ChatMessage {
+  final String id;
+  final String text;
+  final bool isUser;
+  final DateTime createdAt;
+
+  ChatMessage({required this.id, required this.text, required this.isUser, required this.createdAt});
+}
+
 class UploadedFileMeta {
-  UploadedFileMeta({required this.name, required this.path, required this.createdAt});
+  UploadedFileMeta({required this.name, this.path, this.bytes, required this.createdAt});
   final String name;
-  final String path;
+  final String? path;
+  final Uint8List? bytes;
   final DateTime createdAt;
 }
 

@@ -1,30 +1,47 @@
 import 'dart:io';
 import 'dart:convert';
+import 'dart:typed_data';
+import 'package:flutter/foundation.dart';
+import 'package:syncfusion_flutter_pdf/pdf.dart';
+import 'package:docx_to_text/docx_to_text.dart';
+import '../models/models.dart';
 
 class FileParsingService {
   // Extract text from various file types
-  static Future<String?> extractTextFromFile(String filePath) async {
+  static Future<String?> extractTextFromFile(UploadedFileMeta fileMeta) async {
     try {
-      final file = File(filePath);
-      final fileName = file.path.split('/').last;
-      final extension = fileName.split('.').last.toLowerCase();
+      final extension = fileMeta.name.split('.').last.toLowerCase();
+      Uint8List? bytes = fileMeta.bytes;
+
+      if (bytes == null && fileMeta.path != null && !kIsWeb) {
+        final file = File(fileMeta.path!);
+        bytes = await file.readAsBytes();
+      }
+
+      if (bytes == null) {
+        throw Exception('No file data available');
+      }
 
       switch (extension) {
         case 'txt':
-          return await _readTxtFile(filePath);
-        case 'json':
-          return await _readJsonFile(filePath);
-        case 'csv':
-          return await _readCsvFile(filePath);
-        case 'pdf':
-          return await _readPdfFile(filePath);
-        case 'docx':
-          return await _readDocxFile(filePath);
         case 'md':
-          return await _readMarkdownFile(filePath);
+          return utf8.decode(bytes);
+        case 'json':
+          try {
+            final content = utf8.decode(bytes);
+            final json = jsonDecode(content);
+            return jsonEncode(json);
+          } catch (e) {
+            return utf8.decode(bytes);
+          }
+        case 'csv':
+          return utf8.decode(bytes);
+        case 'pdf':
+          return await _readPdfBytes(bytes);
+        case 'docx':
+          return docxToText(bytes);
         default:
-          // Try to read as plain text
-          return await _readTxtFile(filePath);
+          return utf8.decode(bytes);
       }
     } catch (e) {
       print('File Parsing Error: $e');
@@ -32,42 +49,29 @@ class FileParsingService {
     }
   }
 
-  static Future<String> _readTxtFile(String filePath) async {
-    final file = File(filePath);
-    return await file.readAsString();
-  }
-
-  static Future<String> _readJsonFile(String filePath) async {
-    final file = File(filePath);
-    final content = await file.readAsString();
+  static Future<String> _readPdfBytes(Uint8List bytes) async {
     try {
-      final json = jsonDecode(content);
-      return jsonEncode(json); // Pretty print or process as needed
+      final PdfDocument document = PdfDocument(inputBytes: bytes);
+      final String text = PdfTextExtractor(document).extractText();
+      document.dispose();
+      return text;
     } catch (e) {
-      return content; // Return as-is if not valid JSON
+      print('PDF Parsing Error: $e');
+      return 'Error reading PDF: $e';
     }
   }
 
-  static Future<String> _readCsvFile(String filePath) async {
-    final file = File(filePath);
-    final lines = await file.readAsLines();
-    return lines.join('\n');
-  }
-
-  static Future<String> _readPdfFile(String filePath) async {
-    // Note: For production, use pdf package
-    // For now, return a placeholder message
-    return 'PDF file detected at: $filePath\nNote: PDF parsing requires pdf package integration.';
-  }
-
-  static Future<String> _readDocxFile(String filePath) async {
-    // Note: For production, use docx package
-    return 'DOCX file detected at: $filePath\nNote: DOCX parsing requires docx package integration.';
-  }
-
-  static Future<String> _readMarkdownFile(String filePath) async {
-    final file = File(filePath);
-    return await file.readAsString();
+  // Legacy support or if path is still needed for some reason
+  static Future<String?> extractTextFromPath(String filePath) async {
+    if (kIsWeb) return null;
+    try {
+      final file = File(filePath);
+      final bytes = await file.readAsBytes();
+      final name = filePath.split('/').last;
+      return await extractTextFromFile(UploadedFileMeta(name: name, path: filePath, bytes: bytes, createdAt: DateTime.now()));
+    } catch (e) {
+      return null;
+    }
   }
 
   // Get supported file types

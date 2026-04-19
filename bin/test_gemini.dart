@@ -68,7 +68,7 @@ class QuizConfig {
 // Gemini Service
 class GeminiService {
   final String apiKey;
-  final String baseUrl = 'https://generativelanguage.googleapis.com/v1/models/gemini-2.5-pro:generateContent';
+  final String baseUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-pro-preview:generateContent';
 
   GeminiService({required this.apiKey});
 
@@ -186,7 +186,7 @@ void main() async {
   print('║          QuizForge - Gemini API Quiz Generation Test           ║');
   print('╚════════════════════════════════════════════════════════════════╝\n');
 
-  const geminiApiKey = 'AIzaSyCTBlCBXH3uCtmo1K9juaZe1kxvv6avtec';
+  const geminiApiKey = 'AIzaSyAH2bUX7bjGZYdWJkDY6IWG0RGLoMXteBk';
   final geminiService = GeminiService(apiKey: geminiApiKey);
 
   print('📚 TEST: Generating Quiz from Sample Content');

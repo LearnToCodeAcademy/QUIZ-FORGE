@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class AppShell extends StatelessWidget {
   const AppShell({
@@ -61,6 +62,7 @@ class _TopNav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final location = GoRouterState.of(context).matchedLocation;
     return Container(
       height: 44,
       padding: const EdgeInsets.symmetric(horizontal: 14),
@@ -69,10 +71,28 @@ class _TopNav extends StatelessWidget {
         borderRadius: BorderRadius.circular(14),
       ),
       child: Row(
-        children: const [
-          Text('⚡ QuizForge', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFFA78BFA))),
-          Spacer(),
-          Icon(Icons.settings, size: 18, color: Colors.white70),
+        children: [
+          GestureDetector(
+            onTap: () => context.go('/home'),
+            child: const Text('⚡ QuizForge', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFFA78BFA))),
+          ),
+          const Spacer(),
+          IconButton(
+            icon: Icon(
+              Icons.person_outline,
+              size: 18,
+              color: location == '/profile' ? const Color(0xFFA78BFA) : Colors.white70,
+            ),
+            onPressed: () => context.go('/profile'),
+          ),
+          IconButton(
+            icon: Icon(
+              Icons.settings,
+              size: 18,
+              color: location == '/settings' ? const Color(0xFFA78BFA) : Colors.white70,
+            ),
+            onPressed: () => context.go('/settings'),
+          ),
         ],
       ),
     );

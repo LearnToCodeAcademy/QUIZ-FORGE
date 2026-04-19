@@ -10,7 +10,7 @@ class GameHubScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final items = [
       ('Shell Game', 'Watch the cups shuffle — tap the one hiding the correct answer!', '/games/shell'),
-      ('Matching Pairs', 'Flip cards and match every term with its definition.', '/games'),
+      ('Matching Pairs', 'Flip cards and match every term with its definition.', '/games/matching'),
       ('Word Scramble', 'Unscramble key terms letter-by-letter.', '/games/word-scramble'),
       ('Speed Blitz', 'Race the clock — answer MCQ questions fast.', '/games/speed-blitz'),
     ];

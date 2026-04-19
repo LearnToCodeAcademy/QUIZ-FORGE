@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/models.dart';
+import 'auth_state.dart';
 
 class AppState {
   AppState({
@@ -47,15 +48,35 @@ class AppState {
 
 class AppStateNotifier extends Notifier<AppState> {
   @override
-  AppState build() => AppState(
-        sessions: [
-          SessionItem(
-            title: 'Speed Blitz',
-            subtitle: 'Cyber Law Quiz',
-            time: DateTime.now().subtract(const Duration(hours: 2)),
-          ),
-        ],
-      );
+  AppState build() {
+    // Sync user data when auth state changes
+    ref.listen(authStateProvider, (prev, next) {
+      final user = next.value;
+      if (user != null) {
+        setUser(
+          userName: user.displayName ?? 'User',
+          userEmail: user.email ?? '',
+          isAuthenticated: true,
+        );
+      } else {
+        setUser(
+          userName: 'Guest',
+          userEmail: '',
+          isAuthenticated: false,
+        );
+      }
+    });
+
+    return AppState(
+      sessions: [
+        SessionItem(
+          title: 'Speed Blitz',
+          subtitle: 'Cyber Law Quiz',
+          time: DateTime.now().subtract(const Duration(hours: 2)),
+        ),
+      ],
+    );
+  }
 
   void addFile(UploadedFileMeta file) {
     state = state.copyWith(files: [...state.files, file]);

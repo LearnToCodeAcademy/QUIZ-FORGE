@@ -1,4 +1,5 @@
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -14,40 +15,35 @@ class ProfileScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(appStateProvider);
-    final authService = ref.watch(authServiceProvider);
+    final authNotifier = ref.read(authNotifierProvider.notifier);
+    final user = ref.watch(authStateProvider).value;
     
+    final userName = user?.displayName ?? state.userName;
+    final userEmail = user?.email ?? state.userEmail;
+
     return AppShell(
-      title: state.userName,
-      subtitle: '${state.userEmail} • ${state.files.length} files',
+      title: userName,
+      subtitle: '$userEmail • ${state.files.length} files',
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
             Row(
               children: [
-                CircleAvatar(radius: 30, backgroundColor: const Color(0xFFE879F9), child: Text(state.userName.substring(0, 1).toUpperCase())),
+                CircleAvatar(
+                  radius: 30,
+                  backgroundColor: const Color(0xFFE879F9),
+                  backgroundImage: user?.photoURL != null ? NetworkImage(user!.photoURL!) : null,
+                  child: user?.photoURL == null ? Text(userName.substring(0, 1).toUpperCase()) : null,
+                ),
                 const Spacer(),
-                if (state.isAuthenticated)
-                  ElevatedButton.icon(
-                    onPressed: () async {
-                      await authService.signOut();
-                      ref.read(appStateProvider.notifier).setUser(
-                        userName: 'Guest',
-                        userEmail: 'guest@example.com',
-                        isAuthenticated: false,
-                      );
-                      if (context.mounted) {
-                        context.go('/');
-                      }
-                    },
-                    icon: const Icon(Icons.logout),
-                    label: const Text('Sign Out'),
-                  )
-                else
-                  ElevatedButton(
-                    onPressed: () => context.go('/'),
-                    child: const Text('Sign In'),
-                  ),
+                ElevatedButton.icon(
+                  onPressed: () async {
+                    await authNotifier.signOut();
+                  },
+                  icon: const Icon(Icons.logout),
+                  label: const Text('Sign Out'),
+                ),
               ],
             ),
             const SizedBox(height: 12),
@@ -56,12 +52,17 @@ class ProfileScreen extends ConsumerWidget {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () async {
-                      final result = await FilePicker.platform.pickFiles();
-                      if (result != null && result.files.single.path != null) {
+                      final result = await FilePicker.platform.pickFiles(
+                        type: FileType.custom,
+                        allowedExtensions: ['pdf', 'docx', 'txt', 'json', 'csv', 'md'],
+                      );
+                      if (result != null) {
+                        final file = result.files.single;
                         ref.read(appStateProvider.notifier).addFile(
                               UploadedFileMeta(
-                                name: result.files.single.name,
-                                path: result.files.single.path!,
+                                name: file.name,
+                                path: kIsWeb ? null : file.path,
+                                bytes: file.bytes,
                                 createdAt: DateTime.now(),
                               ),
                             );
@@ -83,7 +84,7 @@ class ProfileScreen extends ConsumerWidget {
                           final file = state.files[i];
                           return ListTile(
                             title: Text(file.name),
-                            subtitle: Text(file.path, maxLines: 1, overflow: TextOverflow.ellipsis),
+                            subtitle: Text(file.path ?? 'In-memory (Web)', maxLines: 1, overflow: TextOverflow.ellipsis),
                             trailing: IconButton(
                               icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
                               onPressed: () => ref.read(appStateProvider.notifier).deleteFile(file),

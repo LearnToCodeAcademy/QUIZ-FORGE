@@ -10,11 +10,12 @@ class QuizForgeApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(appStateProvider.select((s) => s.settings));
+    final router = ref.watch(routerProvider);
     return MaterialApp.router(
       title: 'QuizForge',
       debugShowCheckedModeBanner: false,
       theme: buildTheme(settings),
-      routerConfig: buildRouter(),
+      routerConfig: router,
     );
   }
 }

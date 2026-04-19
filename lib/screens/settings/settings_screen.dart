@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../state/app_state.dart';
+import '../../state/auth_state.dart';
+import '../../models/models.dart';
 import '../../widgets/app_shell.dart';
 import '../../widgets/ui_parts.dart';
 
@@ -112,9 +114,25 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               const Text('Clear all saved data including settings, API keys, and preferences.'),
               const SizedBox(height: 10),
               Row(children: [
-                Expanded(child: FilledButton(style: FilledButton.styleFrom(backgroundColor: Colors.redAccent), onPressed: () {}, child: const Text('Clear All Data'))),
+                Expanded(
+                  child: FilledButton(
+                    style: FilledButton.styleFrom(backgroundColor: Colors.redAccent),
+                    onPressed: () {
+                      notifier.setSettings(const AppSettings());
+                    },
+                    child: const Text('Reset Settings'),
+                  ),
+                ),
                 const SizedBox(width: 10),
-                Expanded(child: FilledButton(style: FilledButton.styleFrom(backgroundColor: Colors.red), onPressed: () {}, child: const Text('Delete Account'))),
+                Expanded(
+                  child: FilledButton(
+                    style: FilledButton.styleFrom(backgroundColor: Colors.red),
+                    onPressed: () async {
+                      await ref.read(authNotifierProvider.notifier).signOut();
+                    },
+                    child: const Text('Sign Out'),
+                  ),
+                ),
               ]),
             ]),
           ),
