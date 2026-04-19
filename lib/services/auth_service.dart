@@ -4,10 +4,15 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 
 class AuthService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn(
-    scopes: ['email', 'profile'],
-    serverClientId: '666046041125-9oc54aeqabu1b3jl1noedqnq6eqmgpr4.apps.googleusercontent.com',
-  );
+  late final GoogleSignIn _googleSignIn;
+
+  AuthService() {
+    _googleSignIn = GoogleSignIn(
+      clientId: kIsWeb ? '666046041125-0qpjq4beaon15l13aqlt3jic5r40en5h.apps.googleusercontent.com' : null,
+      scopes: ['email', 'profile'],
+      serverClientId: kIsWeb ? null : '666046041125-0qpjq4beaon15l13aqlt3jic5r40en5h.apps.googleusercontent.com',
+    );
+  }
 
   // Get current user
   User? get currentUser => _firebaseAuth.currentUser;
@@ -18,20 +23,29 @@ class AuthService {
   // Sign in with Google (Forces Browser Flow)
   Future<UserCredential?> signInWithGoogle() async {
     try {
-      print('Starting Google Sign-In via Browser Flow...');
+      print('Starting Google Sign-In...');
       
-      // Using GoogleAuthProvider with signInWithProvider forces a browser/tab flow
-      // This bypasses many native emulator issues
       final googleProvider = GoogleAuthProvider();
       googleProvider.addScope('email');
       googleProvider.addScope('profile');
       
-      final userCredential = await _firebaseAuth.signInWithProvider(googleProvider);
+      UserCredential? userCredential;
+
+      if (kIsWeb) {
+        // Use popup or redirect for web to avoid UnimplementedError
+        print('Web platform detected, using signInWithPopup...');
+        userCredential = await _firebaseAuth.signInWithPopup(googleProvider);
+      } else {
+        // For mobile, using signInWithProvider (which uses browser flow on some configs)
+        // or standard GoogleSignIn flow.
+        print('Mobile platform detected, using signInWithProvider...');
+        userCredential = await _firebaseAuth.signInWithProvider(googleProvider);
+      }
 
       print('Sign-in successful for user: ${userCredential.user?.displayName}');
       return userCredential;
     } catch (e) {
-      print('Google Sign-In Browser Flow Error: $e');
+      print('Google Sign-In Error: $e');
       return null;
     }
   }

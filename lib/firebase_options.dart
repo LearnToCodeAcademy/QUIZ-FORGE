@@ -18,31 +18,31 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyCTBlCBXH3uCtmo1K9juaZe1kxvv6avtec',
+    apiKey: 'AIzaSyBorJfzx52JJfs0U0OA_B_xYW4X7HumiEM',
     appId: '1:666046041125:web:2lc674r7jivd8pdriing84c06e8ajdbt',
     messagingSenderId: '666046041125',
-    projectId: 'quiz-forge-666046041125',
-    authDomain: 'quiz-forge-666046041125.firebaseapp.com',
-    databaseURL: 'https://quiz-forge-666046041125.firebaseio.com',
-    storageBucket: 'quiz-forge-666046041125.appspot.com',
+    projectId: 'gen-lang-client-0833694138',
+    authDomain: 'gen-lang-client-0833694138.firebaseapp.com',
+    databaseURL: 'https://gen-lang-client-0833694138.firebaseio.com',
+    storageBucket: 'gen-lang-client-0833694138.firebasestorage.app',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCTBlCBXH3uCtmo1K9juaZe1kxvv6avtec',
-    appId: '1:666046041125:android:2lc674r7jivd8pdriing84c06e8ajdbt',
+    apiKey: 'AIzaSyBorJfzx52JJfs0U0OA_B_xYW4X7HumiEM',
+    appId: '1:666046041125:android:25e27c32549227afacc3cc',
     messagingSenderId: '666046041125',
-    projectId: 'quiz-forge-666046041125',
-    databaseURL: 'https://quiz-forge-666046041125.firebaseio.com',
-    storageBucket: 'quiz-forge-666046041125.appspot.com',
+    projectId: 'gen-lang-client-0833694138',
+    databaseURL: 'https://gen-lang-client-0833694138.firebaseio.com',
+    storageBucket: 'gen-lang-client-0833694138.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCTBlCBXH3uCtmo1K9juaZe1kxvv6avtec',
+    apiKey: 'AIzaSyDW9G09sHvRwXwIXIvO_sjw-nZC6I78rzU',
     appId: '1:666046041125:ios:2lc674r7jivd8pdriing84c06e8ajdbt',
     messagingSenderId: '666046041125',
-    projectId: 'quiz-forge-666046041125',
-    databaseURL: 'https://quiz-forge-666046041125.firebaseio.com',
-    storageBucket: 'quiz-forge-666046041125.appspot.com',
+    projectId: 'gen-lang-client-0833694138',
+    databaseURL: 'https://gen-lang-client-0833694138.firebaseio.com',
+    storageBucket: 'gen-lang-client-0833694138.appspot.com',
     iosBundleId: 'com.quizforge.app',
   );
 }
