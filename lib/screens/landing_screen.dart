@@ -51,21 +51,30 @@ class LandingScreen extends ConsumerWidget {
                         const SizedBox(height: 12),
                         FilledButton.icon(
                           onPressed: () async {
-                            final authService = ref.read(authServiceProvider);
-                            final result = await authService.signInWithGoogle();
-                            
-                            if (result != null && context.mounted) {
-                              // Update app state with authenticated user
-                              ref.read(appStateProvider.notifier).setUser(
-                                userName: authService.displayName,
-                                userEmail: authService.userEmail,
-                                isAuthenticated: true,
-                              );
-                              context.go('/home');
-                            } else if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Sign-in failed or cancelled')),
-                              );
+                            try {
+                              final authService = ref.read(authServiceProvider);
+                              final result = await authService.signInWithGoogle();
+                              
+                              if (result != null && context.mounted) {
+                                // Update app state with authenticated user
+                                ref.read(appStateProvider.notifier).setUser(
+                                  userName: authService.displayName,
+                                  userEmail: authService.userEmail,
+                                  isAuthenticated: true,
+                                );
+                                context.go('/home');
+                              } else if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Sign-in failed or cancelled')),
+                                );
+                              }
+                            } catch (e) {
+                              print('Sign-in button error: $e');
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('Sign-in error: ${e.toString()}')),
+                                );
+                              }
                             }
                           },
                           icon: const Icon(Icons.g_mobiledata, size: 30),

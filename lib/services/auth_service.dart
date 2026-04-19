@@ -18,30 +18,47 @@ class AuthService {
   // Sign in with Google
   Future<UserCredential?> signInWithGoogle() async {
     try {
+      print('Starting Google Sign-In...');
       late final GoogleSignInAccount? googleUser;
       
       if (kIsWeb) {
         // Web platform sign-in
+        print('Using web sign-in flow');
         googleUser = await _googleSignIn.signIn();
       } else {
         // Mobile platform sign-in
+        print('Using mobile sign-in flow, signing out first...');
         await _googleSignIn.signOut();
         googleUser = await _googleSignIn.signIn();
       }
       
-      if (googleUser == null) return null;
+      if (googleUser == null) {
+        print('Google sign-in cancelled by user');
+        return null;
+      }
+
+      print('Google user selected: ${googleUser.displayName} (${googleUser.email})');
 
       final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      
+      if (googleAuth.accessToken == null || googleAuth.idToken == null) {
+        print('Error: Missing access token or ID token');
+        return null;
+      }
 
+      print('Creating Firebase credential...');
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
+      print('Signing in with Firebase...');
       final userCredential = await _firebaseAuth.signInWithCredential(credential);
+      print('Sign-in successful for user: ${userCredential.user?.displayName}');
       return userCredential;
-    } catch (e) {
+    } catch (e, stackTrace) {
       print('Google Sign-In Error: $e');
+      print('Stack trace: $stackTrace');
       return null;
     }
   }
