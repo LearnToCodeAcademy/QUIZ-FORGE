@@ -239,7 +239,7 @@ class _ShellGameScreenState extends ConsumerState<ShellGameScreen> {
                   child: Container(
                     height: 20,
                     decoration: BoxDecoration(
-                      color: Colors.brown.withValues(alpha: 0.3),
+                      color: Colors.brown.withOpacity(0.3),
                       borderRadius: BorderRadius.circular(20),
                     ),
                   ),
@@ -293,7 +293,7 @@ class _ShellGameScreenState extends ConsumerState<ShellGameScreen> {
     }
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
-      decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(20)),
+      decoration: BoxDecoration(color: color.withOpacity(0.1), borderRadius: BorderRadius.circular(20)),
       child: Text(text, style: TextStyle(color: color, fontWeight: FontWeight.bold)),
     );
   }
@@ -338,7 +338,7 @@ class _CupWidget extends StatelessWidget {
               width: 60,
               height: 10,
               decoration: BoxDecoration(
-                boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: isLifted ? 0.1 : 0.3), blurRadius: 5, spreadRadius: 2)],
+                boxShadow: [BoxShadow(color: Colors.black.withOpacity(isLifted ? 0.1 : 0.3), blurRadius: 5, spreadRadius: 2)],
               ),
             ),
             // Ball/Answer
@@ -383,8 +383,8 @@ class _CupWidget extends StatelessWidget {
                         bottomRight: Radius.circular(30),
                       ),
                       boxShadow: [
-                        if (isCorrectReveal) BoxShadow(color: Colors.green.withValues(alpha: 0.8), blurRadius: 20, spreadRadius: 5),
-                        if (isWrongReveal) BoxShadow(color: Colors.red.withValues(alpha: 0.8), blurRadius: 20, spreadRadius: 5),
+                        if (isCorrectReveal) BoxShadow(color: Colors.green.withOpacity(0.8), blurRadius: 20, spreadRadius: 5),
+                        if (isWrongReveal) BoxShadow(color: Colors.red.withOpacity(0.8), blurRadius: 20, spreadRadius: 5),
                       ],
                     ),
                   ),

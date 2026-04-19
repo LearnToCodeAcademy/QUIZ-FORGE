@@ -220,9 +220,9 @@ class _SpeedBlitzScreenState extends ConsumerState<SpeedBlitzScreen> {
               Color? bgColor;
               if (feedback != null) {
                 if (isCorrect) {
-                  bgColor = Colors.green.withValues(alpha: 0.3);
+                  bgColor = Colors.green.withOpacity(0.3);
                 } else if (isSelected) {
-                  bgColor = Colors.red.withValues(alpha: 0.3);
+                  bgColor = Colors.red.withOpacity(0.3);
                 }
               }
 
@@ -234,7 +234,7 @@ class _SpeedBlitzScreenState extends ConsumerState<SpeedBlitzScreen> {
                     duration: const Duration(milliseconds: 200),
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     decoration: BoxDecoration(
-                      color: bgColor ?? Colors.white.withValues(alpha: 0.05),
+                      color: bgColor ?? Colors.white.withOpacity(0.05),
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
                         color: feedback != null

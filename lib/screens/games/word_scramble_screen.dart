@@ -196,7 +196,7 @@ class _WordScrambleScreenState extends ConsumerState<WordScrambleScreen> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: status == 'correct' ? Colors.green.withValues(alpha: 0.2) : status == 'wrong' ? Colors.red.withValues(alpha: 0.2) : Colors.black26,
+                color: status == 'correct' ? Colors.green.withOpacity(0.2) : status == 'wrong' ? Colors.red.withOpacity(0.2) : Colors.black26,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
                   color: status == 'correct' ? Colors.green : status == 'wrong' ? Colors.red : Colors.white10,

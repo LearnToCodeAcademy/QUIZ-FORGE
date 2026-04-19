@@ -214,10 +214,10 @@ class _MatchingPairsScreenState extends ConsumerState<MatchingPairsScreen> {
                 duration: const Duration(milliseconds: 300),
                 decoration: BoxDecoration(
                   color: card.status == 'matched'
-                      ? Colors.green.withValues(alpha: 0.5)
+                      ? Colors.green.withOpacity(0.5)
                       : card.status == 'flipped'
                           ? Colors.deepPurple
-                          : Colors.deepPurple.withValues(alpha: 0.3),
+                          : Colors.deepPurple.withOpacity(0.3),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     color: card.status == 'flipped' ? Colors.white : Colors.white10,
@@ -233,7 +233,7 @@ class _MatchingPairsScreenState extends ConsumerState<MatchingPairsScreen> {
                         children: [
                           Text(
                             card.side.toUpperCase(),
-                            style: TextStyle(fontSize: 10, color: Colors.white.withValues(alpha: 0.5), fontWeight: FontWeight.bold),
+                            style: TextStyle(fontSize: 10, color: Colors.white.withOpacity(0.5), fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(height: 4),
                           Expanded(
