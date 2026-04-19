@@ -15,37 +15,24 @@ class AuthService {
   // Get current user stream
   Stream<User?> get authStateChanges => _firebaseAuth.authStateChanges();
 
-  // Sign in with Google
+  // Sign in with Google (Forces Browser Flow)
   Future<UserCredential?> signInWithGoogle() async {
     try {
-      print('Starting Google Sign-In...');
-
-      // Ensure we are signed out from any previous sessions to force account picker
-      try {
-        await _googleSignIn.signOut();
-      } catch (_) {}
-
-      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      print('Starting Google Sign-In via Browser Flow...');
       
-      if (googleUser == null) {
-        print('Google sign-in cancelled by user');
-        return null;
-      }
-
-      print('Google user selected: ${googleUser.displayName}');
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      // Using GoogleAuthProvider with signInWithProvider forces a browser/tab flow
+      // This bypasses many native emulator issues
+      final googleProvider = GoogleAuthProvider();
+      googleProvider.addScope('email');
+      googleProvider.addScope('profile');
       
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
+      final userCredential = await _firebaseAuth.signInWithProvider(googleProvider);
 
-      print('Signing in with Firebase...');
-      return await _firebaseAuth.signInWithCredential(credential);
+      print('Sign-in successful for user: ${userCredential.user?.displayName}');
+      return userCredential;
     } catch (e) {
-      print('Google Sign-In Error: $e');
-      // If native sign-in fails, we could potentially implement a manual browser flow here
-      rethrow;
+      print('Google Sign-In Browser Flow Error: $e');
+      return null;
     }
   }
 
