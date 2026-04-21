@@ -79,9 +79,13 @@ jobs:
           }
           EOF
 
-      # Create .env file using GitHub Secrets (to prevent Google from revoking the key)
+      # Create .env file using GitHub Secrets
       - name: Create .env with API key
         run: echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" > .env
+      
+      # Create placeholder api_config.dart to satisfy compiler if needed
+      - name: Create placeholder ApiConfig
+        run: echo "class ApiConfig { static const String geminiKey = ''; }" > lib/api_config.dart
 
       # Install dependencies
       - name: Get dependencies

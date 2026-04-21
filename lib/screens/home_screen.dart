@@ -20,6 +20,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   final String demoContent =
       "Flutter is an open-source UI software development kit created by Google. It is used to develop cross platform applications from a single codebase for any web browser, Fuchsia, Android, iOS, Linux, macOS, and Windows. First described in 2015, Flutter was released in May 2017.";
 
+  String _getGreeting() {
+    final hour = DateTime.now().hour;
+    if (hour < 12) return 'Good Morning';
+    if (hour < 17) return 'Good Afternoon';
+    return 'Good Evening';
+  }
+
   Future<void> _pickFile() async {
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
@@ -38,9 +45,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Uploaded ${file.name}'),
+            content: Text('✓ ${file.name} uploaded successfully'),
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            backgroundColor: const Color(0xFF1E293B),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           ),
         );
       }
@@ -58,35 +66,48 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final String contentToUse = appState.files.isNotEmpty ? "Content from ${appState.files.last.name}" : demoContent;
 
     return AppShell(
-      title: 'Hi, ${appState.userName.split(' ')[0]}',
-      subtitle: 'Ready to study today?',
+      title: '${_getGreeting()},',
+      subtitle: '${appState.userName.split(' ')[0]}',
       overlay: (flashcardState.isLoading || reviewerState.isLoading)
           ? LoadingOverlay(
-              message: flashcardState.isLoading ? 'Generating Flashcards...' : 'Forging Reviewer Notes...',
+              message: flashcardState.isLoading ? 'Forging Flashcards...' : 'Generating Study Guide...',
               progress: progress,
             )
           : null,
       child: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        physics: const BouncingScrollPhysics(),
         children: [
           // AI Model Quick Switch
           FadeInUp(
             delay: const Duration(milliseconds: 100),
             child: GlowCard(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               child: Row(
                 children: [
-                  const Icon(Icons.psychology, color: Color(0xFFA78BFA)),
-                  const SizedBox(width: 12),
-                  const Text('AI Engine', style: TextStyle(fontWeight: FontWeight.bold)),
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(color: Colors.amberAccent.withOpacity(0.1), borderRadius: BorderRadius.circular(10)),
+                    child: const Icon(Icons.psychology_rounded, color: Colors.amberAccent, size: 20),
+                  ),
+                  const SizedBox(width: 16),
+                  const Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('AI Engine', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 13)),
+                      Text('Powered by Gemini 3.1 Pro', style: TextStyle(color: Colors.white38, fontSize: 10)),
+                    ],
+                  ),
                   const Spacer(),
                   DropdownButton<String>(
                     value: appState.settings.aiModel,
                     underline: const SizedBox(),
-                    dropdownColor: const Color(0xFF1A1F3D),
+                    icon: const Icon(Icons.keyboard_arrow_down_rounded, size: 18),
+                    dropdownColor: const Color(0xFF1E293B),
+                    style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.white),
                     items: ['Grok', 'Google Gemini'].map((m) => DropdownMenuItem(
                       value: m,
-                      child: Text(m, style: const TextStyle(color: Colors.white, fontSize: 13)),
+                      child: Text(m),
                     )).toList(),
                     onChanged: (val) {
                       if (val != null) {
@@ -104,6 +125,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           FadeInUp(
             delay: const Duration(milliseconds: 200),
             child: GlowCard(
+              padding: const EdgeInsets.all(20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -112,53 +134,57 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     children: [
                       const Row(
                         children: [
-                          Icon(Icons.folder_copy_rounded, color: Color(0xFFA78BFA), size: 18),
-                          SizedBox(width: 8),
-                          Text('Study Materials', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                          Icon(Icons.folder_copy_rounded, color: Color(0xFF38BDF8), size: 18),
+                          SizedBox(width: 10),
+                          Text('Study Materials', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 15)),
                         ],
                       ),
-                      IconButton(
-                        style: IconButton.styleFrom(
-                          backgroundColor: const Color(0xFFA78BFA).withOpacity(0.1),
-                          foregroundColor: const Color(0xFFA78BFA),
-                        ),
-                        icon: const Icon(Icons.add, size: 20),
+                      TextButton.icon(
                         onPressed: _pickFile,
+                        icon: const Icon(Icons.add_rounded, size: 18),
+                        label: const Text('Add File', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                        style: TextButton.styleFrom(
+                          foregroundColor: const Color(0xFF38BDF8),
+                          backgroundColor: const Color(0xFF38BDF8).withOpacity(0.1),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        ),
                       ),
                     ],
                   ),
+                  const SizedBox(height: 16),
                   if (appState.files.isEmpty)
                     Container(
-                      margin: const EdgeInsets.only(top: 12),
-                      padding: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.symmetric(vertical: 24),
                       width: double.infinity,
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.03),
-                        borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: Colors.white.withOpacity(0.05)),
+                        color: Colors.black.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: Colors.white.withOpacity(0.03)),
                       ),
-                      child: const Column(
+                      child: Column(
                         children: [
-                          Icon(Icons.cloud_upload_outlined, color: Colors.white24, size: 32),
-                          SizedBox(height: 8),
-                          Text('No files yet', style: TextStyle(color: Colors.white38, fontSize: 13, fontWeight: FontWeight.w600)),
-                          Text('Using default demo content', style: TextStyle(color: Colors.white24, fontSize: 11)),
+                          Icon(Icons.auto_stories_rounded, color: Colors.white.withOpacity(0.1), size: 40),
+                          const SizedBox(height: 12),
+                          const Text('Drop your lecture notes here', style: TextStyle(color: Colors.white38, fontSize: 13)),
                         ],
                       ),
                     )
                   else
                     ...appState.files.map((f) => Container(
-                      margin: const EdgeInsets.only(top: 8),
+                      margin: const EdgeInsets.only(bottom: 8),
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.05),
+                        color: Colors.white.withOpacity(0.03),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: ListTile(
                         dense: true,
-                        leading: const Icon(Icons.description_rounded, size: 18, color: Color(0xFFA78BFA)),
-                        title: Text(f.name, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
+                        contentPadding: EdgeInsets.zero,
+                        leading: const Icon(Icons.description_rounded, size: 20, color: Color(0xFF38BDF8)),
+                        title: Text(f.name, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                        subtitle: Text('${(DateTime.now().difference(f.createdAt).inMinutes)}m ago', style: const TextStyle(fontSize: 10, color: Colors.white24)),
                         trailing: IconButton(
-                          icon: const Icon(Icons.close, size: 16, color: Colors.white38),
+                          icon: const Icon(Icons.delete_outline_rounded, size: 18, color: Colors.redAccent),
                           onPressed: () => appNotifier.deleteFile(f),
                         ),
                       ),
@@ -170,7 +196,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           const SizedBox(height: 24),
           const FadeInUp(
             delay: Duration(milliseconds: 300),
-            child: Text("Study Tools", style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800, letterSpacing: 0.5))
+            child: Text("Study Dashboard", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900, letterSpacing: -0.5))
           ),
           const SizedBox(height: 12),
           FadeInUp(
@@ -179,16 +205,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               crossAxisCount: 2,
-              mainAxisSpacing: 14,
-              crossAxisSpacing: 14,
-              childAspectRatio: 0.95,
+              mainAxisSpacing: 16,
+              crossAxisSpacing: 16,
+              childAspectRatio: 1.0,
               children: [
-                _buildToolCard(
-                  '🎯', 'Generate Quiz', 'Test your knowledge with AI',
+                _buildActionCard(
+                  '🎯', 'Smart Quiz', 'AI-generated exam', const Color(0xFFF472B6),
                   () => context.go('/quiz-config'),
                 ),
-                _buildToolCard(
-                  '📝', 'Reviewer', 'AI-structured notes & summaries',
+                _buildActionCard(
+                  '📝', 'Reviewer', 'Guided summaries', const Color(0xFF38BDF8),
                   () async {
                     if (reviewerState.isLoading) return;
                     await ref.read(reviewerNotesGenerationProvider.notifier).generateReviewerNotes(content: contentToUse);
@@ -198,8 +224,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     }
                   }
                 ),
-                _buildToolCard(
-                  '🗂️', 'Flashcards', 'Flip cards for quick memorization',
+                _buildActionCard(
+                  '🗂️', 'Flashcards', 'Active recall deck', const Color(0xFFA78BFA),
                   () async {
                     if (flashcardState.isLoading) return;
                     await ref.read(flashcardGenerationProvider.notifier).generateFlashcards(content: contentToUse);
@@ -209,38 +235,46 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     }
                   }
                 ),
-                _buildToolCard(
-                  '💬', 'AI Chat', 'Ask specific questions on content',
+                _buildActionCard(
+                  '💬', 'AI Tutor', 'Contextual chat', const Color(0xFF34D399),
                   () => context.go('/chat'),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 32),
+          const SizedBox(height: 40),
         ],
       ),
     );
   }
 
-  Widget _buildToolCard(String emoji, String title, String subtitle, VoidCallback onTap) {
+  Widget _buildActionCard(String emoji, String title, String subtitle, Color color, VoidCallback onTap) {
     return GlowCard(
       onTap: onTap,
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+      padding: EdgeInsets.zero,
+      child: Stack(
         children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: const Color(0xFFA78BFA).withOpacity(0.1),
-              borderRadius: BorderRadius.circular(12),
+          Positioned(
+            right: -10, top: -10,
+            child: Container(
+              width: 60, height: 60,
+              decoration: BoxDecoration(color: color.withOpacity(0.05), shape: BoxShape.circle),
             ),
-            child: Text(emoji, style: const TextStyle(fontSize: 24)),
           ),
-          const SizedBox(height: 12),
-          Text(title, textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 13, letterSpacing: 0.2)),
-          const SizedBox(height: 6),
-          Text(subtitle, textAlign: TextAlign.center, style: const TextStyle(color: Colors.white38, fontSize: 10, height: 1.3)),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(emoji, style: const TextStyle(fontSize: 26)),
+                const SizedBox(height: 12),
+                Text(title, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 14)),
+                const SizedBox(height: 4),
+                Text(subtitle, style: const TextStyle(color: Colors.white30, fontSize: 10, fontWeight: FontWeight.w500)),
+              ],
+            ),
+          ),
         ],
       ),
     );

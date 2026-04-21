@@ -22,64 +22,62 @@ class _ReviewerNotesScreenState extends ConsumerState<ReviewerNotesScreen> {
   }
 
   String _formatContent(String raw) {
-    // Basic cleaning of markdown symbols if not using a renderer
+    // Advanced cleaning of markdown symbols
     return raw
-        .replaceAll(RegExp(r'#+\s*'), '') // Remove headers
-        .replaceAll(RegExp(r'\*\*'), '') // Remove bold
-        .replaceAll(RegExp(r'\*'), '•') // Replace bullet points
+        .replaceAll(RegExp(r'#+\s*'), '')      // Remove headers
+        .replaceAll(RegExp(r'\*\*'), '')       // Remove bold
+        .replaceAll(RegExp(r'__'), '')         // Remove underline
+        .replaceAll(RegExp(r'`'), '')          // Remove code ticks
+        .replaceAll(RegExp(r'\n{3,}'), '\n\n') // Normalize newlines
+        .replaceAll(RegExp(r'^\s*[\*•-]\s*', multiLine: true), '• ') // Standardize bullets
         .trim();
   }
 
   @override
   Widget build(BuildContext context) {
     return AppShell(
-      title: 'Reviewer Notes',
-      subtitle: 'AI-Generated Study Guide',
+      title: 'Study Guide',
+      subtitle: 'AI-Structured Reviewer',
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-           context.push('/chat', extra: widget.content);
-        },
-        backgroundColor: const Color(0xFFA78BFA),
-        icon: const Icon(Icons.psychology),
-        label: const Text('Ask QuizForge AI'),
+        onPressed: () => context.push('/chat', extra: widget.content),
+        backgroundColor: Theme.of(context).primaryColor,
+        icon: const Icon(Icons.psychology_rounded),
+        label: const Text('Ask QuizForge AI', style: TextStyle(fontWeight: FontWeight.bold)),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         child: FadeInUp(
           child: GlowCard(
+            padding: EdgeInsets.zero,
             child: Column(
               children: [
-                Row(
-                  children: [
-                    const Icon(Icons.auto_stories, color: Color(0xFFA78BFA), size: 20),
-                    const SizedBox(width: 8),
-                    const Text('Study Guide', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                    const Spacer(),
-                    IconButton(
-                      icon: const Icon(Icons.download_rounded, color: Colors.white70),
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Downloading PDF...')),
-                        );
-                      },
-                      tooltip: 'Download PDF',
-                    ),
-                  ],
+                Container(
+                  padding: const EdgeInsets.fromLTRB(20, 20, 10, 10),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.auto_awesome, color: Colors.amberAccent, size: 18),
+                      const SizedBox(width: 10),
+                      const Text('Reviewer Content', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                      const Spacer(),
+                      _ExportButton(label: 'PDF', icon: Icons.picture_as_pdf, color: Colors.redAccent.withOpacity(0.2), onColor: Colors.redAccent),
+                      const SizedBox(width: 8),
+                      _ExportButton(label: 'DOC', icon: Icons.description, color: Colors.blueAccent.withOpacity(0.2), onColor: Colors.blueAccent),
+                    ],
+                  ),
                 ),
-                const Divider(color: Colors.white10, height: 24),
+                const Divider(color: Colors.white10, height: 1),
                 Expanded(
                   child: SingleChildScrollView(
                     physics: const BouncingScrollPhysics(),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: Text(
-                        formattedContent,
-                        style: TextStyle(
-                          color: Colors.white.withOpacity(0.9),
-                          fontSize: 15,
-                          height: 1.6,
-                          letterSpacing: 0.2,
-                        ),
+                    padding: const EdgeInsets.all(24),
+                    child: SelectableText(
+                      formattedContent,
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.85),
+                        fontSize: 15,
+                        height: 1.8,
+                        letterSpacing: 0.3,
+                        fontFamily: 'Roboto', // Cleaner reading font
                       ),
                     ),
                   ),
@@ -87,6 +85,42 @@ class _ReviewerNotesScreenState extends ConsumerState<ReviewerNotesScreen> {
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ExportButton extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final Color color;
+  final Color onColor;
+
+  const _ExportButton({required this.label, required this.icon, required this.color, required this.onColor});
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Exporting to $label...'),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: onColor.withOpacity(0.8),
+          ),
+        );
+      },
+      borderRadius: BorderRadius.circular(8),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(8)),
+        child: Row(
+          children: [
+            Icon(icon, size: 14, color: onColor),
+            const SizedBox(width: 4),
+            Text(label, style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: onColor)),
+          ],
         ),
       ),
     );

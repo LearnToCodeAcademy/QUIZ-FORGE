@@ -4,8 +4,8 @@ import 'auth_state.dart';
 
 class AppState {
   AppState({
-    this.userName = 'mr cooking beginners',
-    this.userEmail = 'hanmajohn3@gmail.com',
+    this.userName = 'Future Scholar',
+    this.userEmail = '',
     this.isAuthenticated = false,
     this.files = const [],
     this.bookmarks = const [],
@@ -54,7 +54,7 @@ class AppStateNotifier extends Notifier<AppState> {
       final user = next.value;
       if (user != null) {
         setUser(
-          userName: user.displayName ?? 'User',
+          userName: user.displayName ?? 'Scholar',
           userEmail: user.email ?? '',
           isAuthenticated: true,
         );
@@ -67,15 +67,7 @@ class AppStateNotifier extends Notifier<AppState> {
       }
     });
 
-    return AppState(
-      sessions: [
-        SessionItem(
-          title: 'Speed Blitz',
-          subtitle: 'Cyber Law Quiz',
-          time: DateTime.now().subtract(const Duration(hours: 2)),
-        ),
-      ],
-    );
+    return AppState();
   }
 
   void addFile(UploadedFileMeta file) {

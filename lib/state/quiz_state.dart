@@ -7,14 +7,24 @@ import '../services/gemini_service.dart';
 import '../services/grok_service.dart';
 import '../services/file_parsing_service.dart';
 import '../state/app_state.dart';
+import '../api_config.dart';
 
 // Gemini service provider
 final geminiServiceProvider = Provider<GeminiService>((ref) {
   final appState = ref.watch(appStateProvider);
-  final apiKey = appState.settings.geminiKey.isNotEmpty
-      ? appState.settings.geminiKey
-      : dotenv.get('GEMINI_API_KEY', fallback: '');
-  return GeminiService(apiKey: apiKey);
+  String key = appState.settings.geminiKey;
+
+  if (key.isEmpty) {
+    try {
+      key = dotenv.get('GEMINI_API_KEY', fallback: '');
+    } catch (_) {}
+  }
+
+  if (key.isEmpty) {
+    key = ApiConfig.geminiKey;
+  }
+
+  return GeminiService(apiKey: key);
 });
 
 // Grok service provider
@@ -30,31 +40,26 @@ final grokServiceProvider = Provider<GrokService>((ref) {
 final generationProgressProvider = StateProvider<double>((ref) => 0.0);
 
 // Helper to simulate progress
-void _startProgressSimulation(WidgetRef? ref, Ref? containerRef) {
-  final target = ref ?? containerRef;
-  if (target == null) return;
+void _startProgressSimulation(Ref ref) {
+  ref.read(generationProgressProvider.notifier).state = 0.05;
 
-  // Reset progress
-  if (target is WidgetRef) target.read(generationProgressProvider.notifier).state = 0.05;
-  if (target is Ref) target.read(generationProgressProvider.notifier).state = 0.05;
-
-  Timer.periodic(const Duration(milliseconds: 100), (timer) {
-    final current = (target is WidgetRef) ? target.read(generationProgressProvider) : (target as Ref).read(generationProgressProvider);
-    if (current >= 0.9 || timer.tick > 200) {
+  Timer.periodic(const Duration(milliseconds: 150), (timer) {
+    final current = ref.read(generationProgressProvider);
+    if (current >= 0.92 || !timer.isActive) {
       timer.cancel();
     } else {
-      final step = (0.95 - current) / 20;
-      if (target is WidgetRef) target.read(generationProgressProvider.notifier).state += step;
-      if (target is Ref) target.read(generationProgressProvider.notifier).state += step;
+      // Slow down as it gets closer to 95
+      final step = (0.95 - current) / 15;
+      ref.read(generationProgressProvider.notifier).state += step;
     }
   });
 }
 
-void _completeProgress(WidgetRef? ref, Ref? containerRef) {
-  final target = ref ?? containerRef;
-  if (target == null) return;
-  if (target is WidgetRef) target.read(generationProgressProvider.notifier).state = 1.0;
-  if (target is Ref) target.read(generationProgressProvider.notifier).state = 1.0;
+void _completeProgress(Ref ref) {
+  ref.read(generationProgressProvider.notifier).state = 1.0;
+  Future.delayed(const Duration(milliseconds: 500), () {
+     ref.read(generationProgressProvider.notifier).state = 0.0;
+  });
 }
 
 // Quiz generation state
@@ -67,7 +72,7 @@ class QuizGenerationNotifier extends AsyncNotifier<Quiz?> {
     required QuizConfig config,
   }) async {
     state = const AsyncValue.loading();
-    _startProgressSimulation(null, ref);
+    _startProgressSimulation(ref);
 
     state = await AsyncValue.guard(() async {
       final appState = ref.read(appStateProvider);
@@ -84,7 +89,7 @@ class QuizGenerationNotifier extends AsyncNotifier<Quiz?> {
       }
 
       if (quiz == null) throw Exception('Failed to generate quiz from $modelType');
-      _completeProgress(null, ref);
+      _completeProgress(ref);
       return quiz;
     });
   }
@@ -94,7 +99,7 @@ class QuizGenerationNotifier extends AsyncNotifier<Quiz?> {
     required QuizConfig config,
   }) async {
     state = const AsyncValue.loading();
-    _startProgressSimulation(null, ref);
+    _startProgressSimulation(ref);
 
     state = await AsyncValue.guard(() async {
       final appState = ref.read(appStateProvider);
@@ -108,7 +113,7 @@ class QuizGenerationNotifier extends AsyncNotifier<Quiz?> {
       }
 
       if (quiz == null) throw Exception('Failed to generate quiz from $modelType');
-      _completeProgress(null, ref);
+      _completeProgress(ref);
       return quiz;
     });
   }
@@ -130,10 +135,6 @@ class QuizResultsNotifier extends Notifier<List<QuizResult>> {
   @override
   List<QuizResult> build() => [];
   void addResult(QuizResult result) => state = [...state, result];
-  double getAverageScore() {
-    if (state.isEmpty) return 0;
-    return state.fold<double>(0, (sum, r) => sum + r.percentage) / state.length;
-  }
 }
 final quizResultsProvider = NotifierProvider<QuizResultsNotifier, List<QuizResult>>(QuizResultsNotifier.new);
 
@@ -144,13 +145,13 @@ class FlashcardGenerationNotifier extends AsyncNotifier<List<Flashcard>?> {
 
   Future<void> generateFlashcards({required String content}) async {
     state = const AsyncValue.loading();
-    _startProgressSimulation(null, ref);
+    _startProgressSimulation(ref);
     state = await AsyncValue.guard(() async {
       final modelType = ref.read(appStateProvider).settings.aiModel;
       final result = modelType == 'Grok'
           ? await ref.read(grokServiceProvider).generateFlashcards(content: content)
           : await ref.read(geminiServiceProvider).generateFlashcards(content: content);
-      _completeProgress(null, ref);
+      _completeProgress(ref);
       return result;
     });
   }
@@ -164,13 +165,13 @@ class ReviewerNotesGenerationNotifier extends AsyncNotifier<String?> {
 
   Future<void> generateReviewerNotes({required String content}) async {
     state = const AsyncValue.loading();
-    _startProgressSimulation(null, ref);
+    _startProgressSimulation(ref);
     state = await AsyncValue.guard(() async {
       final modelType = ref.read(appStateProvider).settings.aiModel;
       final result = modelType == 'Grok'
           ? await ref.read(grokServiceProvider).generateReviewerNotes(content: content)
           : await ref.read(geminiServiceProvider).generateReviewerNotes(content: content);
-      _completeProgress(null, ref);
+      _completeProgress(ref);
       return result;
     });
   }
