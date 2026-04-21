@@ -7,7 +7,14 @@ import '../state/app_state.dart';
 import '../widgets/ui_parts.dart';
 
 class QuizResultsScreen extends ConsumerWidget {
-  const QuizResultsScreen({super.key});
+  final int? timeSpent;
+  const QuizResultsScreen({super.key, this.timeSpent});
+
+  String _formatTime(int seconds) {
+    final m = (seconds / 60).floor();
+    final s = seconds % 60;
+    return '${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -15,10 +22,10 @@ class QuizResultsScreen extends ConsumerWidget {
     if (results.isEmpty) return const Scaffold(body: Center(child: Text('No results found')));
 
     final lastResult = results.last;
-    final settings = ref.watch(appStateProvider).settings;
+    final timeStr = timeSpent != null ? _formatTime(timeSpent!) : '02:30';
 
     return Scaffold(
-      backgroundColor: const Color(0xFF050924),
+      backgroundColor: const Color(0xFF070B19),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
@@ -58,6 +65,7 @@ class QuizResultsScreen extends ConsumerWidget {
                       curve: Curves.easeOutCubic,
                       builder: (context, value, child) {
                         return Column(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
                               '${value.round()}%',
@@ -90,7 +98,7 @@ class QuizResultsScreen extends ConsumerWidget {
                       Divider(color: Colors.white.withOpacity(0.1), height: 24),
                       _ResultStatRow(label: 'Incorrect Answers', value: (lastResult.totalQuestions - lastResult.score).round().toString(), color: Colors.redAccent, icon: Icons.cancel),
                       Divider(color: Colors.white.withOpacity(0.1), height: 24),
-                      const _ResultStatRow(label: 'Completion Time', value: '2:30', color: Colors.blueAccent, icon: Icons.timer),
+                      _ResultStatRow(label: 'Completion Time', value: timeStr, color: Colors.blueAccent, icon: Icons.timer),
                     ],
                   ),
                 ),
@@ -222,16 +230,34 @@ class QuizResultsScreen extends ConsumerWidget {
 
           return AlertDialog(
             backgroundColor: const Color(0xFF1A1F3D),
-            title: const Text('AI Explanation', style: TextStyle(color: Colors.white)),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            title: const Row(
+              children: [
+                Icon(Icons.psychology, color: Color(0xFFA78BFA)),
+                SizedBox(width: 12),
+                Text('AI Explanation', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+              ],
+            ),
             content: SingleChildScrollView(
               child: explanation.when(
-                data: (text) => Text(text ?? 'No explanation available.', style: const TextStyle(color: Colors.white70)),
-                loading: () => const Center(child: CircularProgressIndicator()),
+                data: (text) => Text(text ?? 'No explanation available.', style: const TextStyle(color: Colors.white70, height: 1.5)),
+                loading: () => const Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(height: 20),
+                    CircularProgressIndicator(color: Color(0xFFA78BFA)),
+                    SizedBox(height: 20),
+                    Text('Thinking...', style: TextStyle(color: Colors.white38)),
+                  ],
+                ),
                 error: (e, s) => Text('Error: $e', style: const TextStyle(color: Colors.redAccent)),
               ),
             ),
             actions: [
-              TextButton(onPressed: () => Navigator.pop(context), child: const Text('Close')),
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Close', style: TextStyle(color: Color(0xFFA78BFA), fontWeight: FontWeight.bold))
+              ),
             ],
           );
         },
@@ -241,9 +267,9 @@ class QuizResultsScreen extends ConsumerWidget {
     // Trigger explanation
     ref.read(explanationProvider.notifier).explain(
           question: q.prompt,
-          userAnswer: "User selected index/value", // In a real app, pass the actual user answer
+          userAnswer: "Unknown User Choice",
           correctAnswer: q.explanation,
-          context: "Quiz on AI-generated content",
+          context: "Quiz summary question review",
         );
   }
 }

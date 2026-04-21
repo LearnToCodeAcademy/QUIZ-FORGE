@@ -63,7 +63,13 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: '/home', builder: (_, __) => const HomeScreen()),
       GoRoute(path: '/profile', builder: (_, __) => const ProfileScreen()),
       GoRoute(path: '/bookmarks', builder: (_, __) => const BookmarksScreen()),
-      GoRoute(path: '/chat', builder: (_, __) => const ChatScreen()),
+      GoRoute(
+        path: '/chat',
+        builder: (context, state) {
+          final contextData = state.extra as String?;
+          return ChatScreen(initialContext: contextData);
+        }
+      ),
       GoRoute(path: '/session', builder: (_, __) => const SessionScreen()),
       GoRoute(path: '/history', builder: (_, __) => const HistoryScreen()),
       GoRoute(path: '/rankings', builder: (_, __) => const RankingsScreen()),
@@ -84,7 +90,13 @@ final routerProvider = Provider<GoRouter>((ref) {
           return ReviewerNotesScreen(content: content);
         },
       ),
-      GoRoute(path: '/results', builder: (_, __) => const QuizResultsScreen()),
+      GoRoute(
+        path: '/results',
+        builder: (context, state) {
+          final time = state.extra as int?;
+          return QuizResultsScreen(timeSpent: time);
+        }
+      ),
       GoRoute(path: '/games', builder: (_, __) => const GameHubScreen()),
       GoRoute(path: '/games/shell', builder: (_, __) => const ShellGameScreen()),
       GoRoute(path: '/games/matching', builder: (_, __) => const MatchingPairsScreen()),

@@ -68,8 +68,7 @@ class PromptService {
       "",
       "CRITICAL TYPE RULES:",
       "- The returned top-level field \"quiz_type\" must exactly equal \"$quizType\".",
-      "- If quizType != \"mixed\", then ALL questions must have question.type == \"$quizType\".",
-      "- If quizType == \"mixed\", allow mixture but keep it sensible.",
+      "- If quizType != \"Mixed\", then ALL questions must have question.type matching the requested type (mcq for Multiple Choice, etc).",
       "",
       "COUNT RULES:",
       "- question_count MUST equal questions.length.",
@@ -116,10 +115,14 @@ Focus on:
 3. Common misconceptions
 4. Real-world applications
 
+All mathematical equations or formulas MUST be wrapped in LaTeX delimiters:
+Inline math: \\( ... \\)
+Block math: \\[ ... \\]
+
 Content:
 $content
 
-Provide the notes in a structured, organized Markdown format.
+IMPORTANT: Provide the notes in a structured, organized plain text format. Do not use Markdown headers like # or bolding like **. Use plain text and bullet points (•).
 ''';
   }
 
@@ -138,7 +141,7 @@ Format your response as a JSON array like this:
 Content:
 $content
 
-Generate 10-15 flashcards.
+Generate 10-15 flashcards. Return JSON only.
 ''';
   }
 
@@ -156,7 +159,7 @@ User's Answer: $userAnswer
 Correct Answer: $correctAnswer
 
 Explain why the correct answer is right and why the user's answer might be wrong or partially correct.
-Keep it encouraging and educational.
+Keep it encouraging and educational. Use LaTeX for any formulas.
 ''';
   }
 }
